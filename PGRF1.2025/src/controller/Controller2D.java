@@ -285,11 +285,10 @@ public class Controller2D {
                                  if (lines.get(i).getChoosenPoint(x,y) >= 0){
                                      choosenIndex = i;
                                  }
-
+                            }
                                  if(choosenIndex != -1 && choosenIndex < lines.size()){
                                      lines.remove(choosenIndex);
                                  }
-                            }
                         }
                     }
 
