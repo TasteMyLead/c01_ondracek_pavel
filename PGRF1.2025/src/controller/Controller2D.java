@@ -55,13 +55,14 @@ public class Controller2D {
 
         initListeners();
         panel.repaint();
+
+
         lineRasterizer = new LineRasterizerTrivial(panel.getRaster());
         //lineRasterizer = new LineRasterizerColorTransition(panel.getRaster());
-
+        //lineRasterizer = new LineRasterizerGraphics(panel.getRaster());
 
     }
 
-    //TODO dočasné metody
     //Metoda abychom dokola nedávali všechno false
     private void allFalse(){
         drawLine = false;
@@ -249,17 +250,18 @@ public class Controller2D {
                         }
                     }
                     else if (drawLine){
+
                         if (editing && lines.size() > 0){
                             for (int i = 0; i < lines.size(); i++){
+
                                 int choosenPoint = lines.get(i).getChoosenPoint(x,y);
                                 if (choosenPoint == 0){
+                                    choosenIndex = i;
                                     startPoint = lines.get(i).getEndPoint();
                                 }
                                 else if (choosenPoint == 1){
+                                    choosenIndex = i;
                                     startPoint = lines.get(i).getStartPoint();
-                                }
-                                else if (choosenPoint == -1){
-                                    startPoint = null;
                                 }
                             }
 
@@ -272,11 +274,25 @@ public class Controller2D {
                     }
                 }
 
-                //Mazaní polygonu pravím tlačítkem myši, ale bude jen fungovat když budeme kreslit polygony
+                //Mazaní
                 if(SwingUtilities.isRightMouseButton(e)){
-                    if(drawPolygon && !isOutOfBounderies(x,y)){
-                        polygon.deletePoint(polygon.getIndex(x,y));
+                    if (!isOutOfBounderies(x, y)){
+                        if(drawPolygon){
+                            polygon.deletePoint(polygon.getIndex(x,y));
+                        }
+                        else if(drawLine){
+                            for (int i = 0; i < lines.size(); i++){
+                                 if (lines.get(i).getChoosenPoint(x,y) >= 0){
+                                     choosenIndex = i;
+                                 }
+
+                                 if(choosenIndex != -1 && choosenIndex < lines.size()){
+                                     lines.remove(choosenIndex);
+                                 }
+                            }
+                        }
                     }
+
                 }
 
                drawScene();
@@ -299,9 +315,11 @@ public class Controller2D {
 
 
                         if (editing && lines.size() > 0){
-
+                            lines.set(choosenIndex, new Line(startPoint, endPoint));
                         }
-                       lines.add(new Line(startPoint, endPoint));
+                        else {
+                            lines.add(new Line(startPoint, endPoint));
+                        }
                    }
                }
 
@@ -321,6 +339,8 @@ public class Controller2D {
 
         //R - Kreslení polygonu
         //E - Editování polygonu
+
+        //I - výběr barvy
         panel.addKeyListener(new KeyAdapter() {
 
 
@@ -388,6 +408,9 @@ public class Controller2D {
                                 endPoint = new Point(x, y, primaryColor);
                             }
 
+                            if (editing && lines.size() > 0){
+                                lines.set(choosenIndex, new Line(startPoint, endPoint));
+                            }
                             if (startPoint.getColor() == endPoint.getColor()) {
                                 lineRasterizer.rasterize(startPoint,endPoint,startPoint.getColor());
                             }

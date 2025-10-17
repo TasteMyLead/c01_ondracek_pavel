@@ -42,16 +42,16 @@ public class Line {
     }
 
     public int getChoosenPoint(int x1, int y1){
-        if (isClose(startPoint.getX(), endPoint.getX(), x1, y1, 20)){
+        if (isClose(startPoint.getX(), startPoint.getY(), x1, y1, 30)){
             return 0;
         }
-        else if (isClose(endPoint.getX(), endPoint.getX(), x1, y1, 20)){
+        else if (isClose(endPoint.getX(), endPoint.getY(), x1, y1, 30)){
             return 1;
         }
         return -1;
     }
 
-    private boolean isClose(int x1, int y1, int x2, int y2, int toleration){
+    public boolean isClose(int x1, int y1, int x2, int y2, int toleration){
         double distance = Math.sqrt(Math.pow(x2-x1,2) + Math.pow(y2-y1,2));
         if(distance<toleration) return true;
         else return false;

@@ -9,7 +9,6 @@ import java.awt.*;
 
 public abstract class LineRasterizer {
     public RasterBufferedrImage raster;
-    //TODO vyřešit barvu
 
         //q = y - k * x
         //y = kx + q
